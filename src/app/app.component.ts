@@ -1,12 +1,38 @@
 import { Component } from '@angular/core';
+import { FooService } from './foo.service';
 
 @Component({
   selector: 'app-root',
   template: `
-    <nav>
-      <a routerLink="cacheing">Cacheing</a>
-    </nav>
-    <router-outlet></router-outlet>
+    <h3>How to cache observables?</h3>
+    <div>
+      <button
+        *ngFor="let fooId of fooIds"
+        (click)="foo.fooSelected(fooId)"
+        class="m-6"
+      >
+        {{ fooId }}
+      </button>
+    </div>
+    <div [class.hide]="foo.fooLoading$ | async">
+      {{ foo.foo$ | async }}
+    </div>
+    <div *ngIf="foo.fooLoading$ | async">Loading....</div>
   `,
+  styles: [
+    `
+      .m-6 {
+        margin: 6px;
+      }
+
+      .hide {
+        display: none;
+      }
+    `,
+  ],
 })
-export class AppComponent {}
+export class AppComponent {
+  fooIds = [1, 2, 3, 4, 5];
+
+  constructor(public foo: FooService) {}
+}
