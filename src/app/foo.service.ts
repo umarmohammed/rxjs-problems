@@ -4,12 +4,14 @@ import { take, map, switchMap, tap, shareReplay } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class FooService {
-  private cache = {};
   private fooSubject = new Subject<number>();
   fooLoading$ = new BehaviorSubject<boolean>(false);
+
+  private cache = {};
   foo$ = this.fooSubject.asObservable().pipe(
     switchMap((id) => {
       if (!this.cache[id]) {
+        // I don't really understand how this shareReplay works
         this.cache[id] = this.doFetch(this.getFooById(id)).pipe(shareReplay());
       }
       return this.cache[id];
